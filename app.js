@@ -4,13 +4,23 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Listing = require("./models/listing");
+
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync");
-const expressError = require("./utils/expressError");
-const {listingSchema} = require("./schema.js");
+
+const expressError = require("./utils/expressError.js");
+
+
+const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
+const userRouter = require("./routes/user.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js");
+const wrapAsync = require("./utils/wrapAsync.js");
 
 // MONGO DB SETUP
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -30,109 +40,68 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.engine("ejs",ejsMate);
+app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+
+const sessionOption = {
+  secret : "secret",
+  resave:false,
+  saveUninitialized:true,
+  cookie:{
+    expires:Date.now() + 7 * 24 * 60 * 60 *1000,
+    maxAge:7 * 24 * 60 * 60 *1000,
+    httpOnly:true,
+  }
+}
 
 //HOME ROUTE
 app.get("/", (req, res) => {
   res.send("this is the home route");
 });
 
-//MAIN ROUTE(Index Route)
+app.use(session(sessionOption));
+app.use(flash());
 
-app.get("/listings", wrapAsync(async (req, res) => {
-  const allListing = await Listing.find({});
-  res.render("./listings/index.ejs", { allListing });
-}));
 
-//NEW ROUTE (render a form to create new lisitng)
 
-app.get("/listings/new", (req, res) => {
-  res.render("./listings/new.ejs");
+
+
+
+
+app.use((req,res,next)=>{
+res.locals.success = req.flash("success");
+res.locals.error = req.flash("error");
+next();
 });
 
-//SHOW ROUTE (to show individual data of all listing)
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-app.get("/listings/:id", wrapAsync(async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id);
-  res.render("./listings/show.ejs", { listing });
-}));
 
-//CREATE ROUTE (to store data in db that comes in req.body);
-app.post("/listings", wrapAsync(async (req, res,next) => {
-let result =  listingSchema.validate(req.body);
-console.log(result);
-    let newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings");
-}));
- 
 
-//EDIT ROUTE (to edit listing)
-app.get("/listings/:id/edit",wrapAsync (async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id);
-  res.render("./listings/edit.ejs", { listing });
-}));
 
-//UPDATE ROUTE (to update listing data)
 
-app.put("/listings/:id", wrapAsync(async (req, res) => {
-  if(!req.body.listing){
-    throw new expressError(400,"Send valid data for listing");
-  }
-  let { id } = req.params;
-  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-  res.redirect(`/listings/${id}`);
-}));
 
-//DELETE ROUTE (to delete listing);
-app.delete("/listings/:id", wrapAsync(async (req, res) => {
-  let { id } = req.params;
-  let deletedListing = await Listing.findByIdAndDelete(id);
-  console.log(deletedListing);
-  res.redirect("/listings");
-}));
+app.use("/listings", listingRouter);
+app.use("/listings/:id/reviews", reviewRouter);
+app.use("/", userRouter);
 
 //PAGE NOT FOUND ERROR
 
-app.all("*",(req,res,next)=>{
-  next(new expressError(404,"page not found"));
+app.all("*", (req, res, next) => {
+  next(new expressError(404, "page not found"));
 });
 
 
 
-
-
-//MIDDLEWARE(to handle async error)
-
-app.use((err,req,res,next)=>{
-  let{status =500 ,message = "Something went wrong"} = err;
- res.status(status).render("error.ejs",{err});
-//  res.status(status).send(message);
+app.use((err, req, res, next) => {
+  let { status = 500, message = "Something went wrong" } = err;
+  res.status(status).render("error.ejs", { err });
 });
-
-
-
-
-
-
-/* TEST ROUTE TO CHECK DB IS WORKING PROPERLY */
-
-// app.get("/testlisting", async (req, res) => {
-//   let sampleListing = new Listing({
-//     title: "new villa",
-//     description: "xyz",
-//     price: 1200,
-//     location: "calangute Goa",
-//     country: "India",
-//   });
-//   await sampleListing.save();
-//   console.log("sample was saved");
-//   res.send("successfull testing");
-// });
 
 //BASIC SERVER SETUP
 app.listen(8080, () => {
