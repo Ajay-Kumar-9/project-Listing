@@ -21,6 +21,8 @@ const userRouter = require("./routes/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const wrapAsync = require("./utils/wrapAsync.js");
+const userModel = require("./routes/user.js");
+const user = require("./models/user.js");
 
 // MONGO DB SETUP
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -69,15 +71,16 @@ app.use(flash());
 
 
 
+
 app.use((req,res,next)=>{
 res.locals.success = req.flash("success");
 res.locals.error = req.flash("error");
-next();
+res.locals.currUser = req.user;
 });
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate));
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 

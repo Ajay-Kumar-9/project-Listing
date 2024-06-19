@@ -28,11 +28,26 @@ router.get("/login",(req,res)=>{
     res.render("users/login.ejs");
 });
 
-router.post("/login", (req,res,next)=>{console.log("hello");next();},passport.authenticate("local", {failureRedirect:"/login", failureFlash : true}),wrapAsync(async(req,res,next)=>{
-    req.flash("Welcome  back to wanderlust!");
+
+
+router.post("/login",passport.authenticate("local", {failureRedirect:"/login", failureFlash: true}),async(req,res)=>{
+    req.flash("success", "Welcome  back to wanderlust!");
     res.redirect("/listings");
     
+    
+});
 
-}));
+router.get("/logout",(req,res,next)=>{
+    req.logOut((err)=>{
+        if(err){
+return next(err);
+        }
+
+        req.flash("success", "you are logged out!");
+        res.redirect("/listings");
+    });
+   
+
+});
 
 module.exports = router;
