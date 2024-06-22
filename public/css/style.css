@@ -1,14 +1,12 @@
-body{
-    font-family: "Plus Jakarta Sans", sans-serif !important;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-
+body {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-.container{
- flex:1;
+.container {
+  flex: 1;
 }
-
 
 /* NAVBAR STYLING */
 .navbar {
@@ -30,8 +28,10 @@ body{
   color: #222222;
 }
 
-.f-info-links,.f-info-socials,.f-info-brand{
-  width:100%;
+.f-info-links,
+.f-info-socials,
+.f-info-brand {
+  width: 100%;
   vertical-align: middle;
   display: flex;
   align-items: center;
@@ -39,80 +39,85 @@ body{
 }
 
 .f-info-socials i {
- margin-right: 1rem;
- font-size: 1.2rem;
+  margin-right: 1rem;
+  font-size: 1.2rem;
 }
 
 .f-info-links a:hover {
   text-decoration: underline;
 }
-.f-info-brand{
+.f-info-brand {
   width: 100%;
 }
-.f-info{
+.f-info {
   text-align: center;
   display: flex;
-  height:8rem;
-  background-color:#ebebeb ;
+  height: 8rem;
+  background-color: #ebebeb;
   flex-wrap: wrap;
   justify-content: center;
-  align-items:space-evenly;
+  align-items: space-evenly;
   text-align: center;
 }
 
 /* CARD STYLING */
 
-.listing-card{
+.listing-card {
   border: none !important;
   margin-bottom: 2rem;
-  
 }
-.card-img-top{
-  border-radius:1rem !important;
-  width:100% !important;
+.card-img-top {
+  border-radius: 1rem !important;
+  width: 100% !important;
   object-fit: cover !important;
 }
-.card-body{
+.card-body {
   padding: 0 !important;
 }
-.card-text{
+.card-text {
   font-weight: 400 !important;
 }
-.listing-link{
+.listing-link {
   text-decoration: none;
 }
 
-.card-img-overlay{
+.card-img-overlay {
   opacity: 0;
 }
-.card-img-overlay:hover{
+.card-img-overlay:hover {
   opacity: 0.3;
   background-color: white;
 }
 
 /* NEW PAGE(new.ejs) button */
-.add-btn{
+.add-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
 
 /* EDIT BTN (EDIT.EJS)*/
 
-.edit-btn{
+.edit-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
 
 /* SHOW.EJS */
 
-.show-img{
-height:40vh;
-
+.show-img {
+  height: 40vh;
 }
-.btns{
-display: flex;
+.btns {
+  display: flex;
 }
-.show-card{
+.show-card {
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+
+/* MAP STYLING */
+
+#map {
+  height: 400px;
+  width: 80vh;
 }

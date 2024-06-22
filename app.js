@@ -1,6 +1,11 @@
 /* Main file */
 
-//REQUIRE PACKAGES OR FILES
+//REQUIRE LIBRARIES OR FILES
+if(process.env.NODE_ENV != "production"){
+  require("dotenv").config();
+}
+
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -18,6 +23,8 @@ const User = require("./models/user.js");
 const userRouter = require("./routes/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
+const multer  = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 // MONGO DB SETUP
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
