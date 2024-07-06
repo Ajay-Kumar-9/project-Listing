@@ -79,9 +79,9 @@ app.use((req, res, next) => {
 });
 
 //HOME ROUTE
-app.get("/", (req, res) => {
-  res.send("this is the home route");
-});
+// app.get("/", (req, res) => {
+//   res.send("this is the home route");
+// });
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
