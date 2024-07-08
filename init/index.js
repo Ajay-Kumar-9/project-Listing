@@ -3,7 +3,7 @@ const Listing = require("../models/listing.js");
 const allListing = require("./data.js");
 
 const mbxGeoCoding = require("@mapbox/mapbox-sdk/services/geocoding");
-process.env.mapToken = MAP_TOKEN;
+process.env.mapToken ="pk.eyJ1IjoidmluaXRtb2RpIiwiYSI6ImNseHlnNjYwbTAwZTEya3IyNW96M2d0ZHgifQ.vm0AB_lRtReDu3PskCcMFg";
 const geocodingClient = mbxGeoCoding({ accessToken: mapToken });
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
