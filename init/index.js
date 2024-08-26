@@ -3,39 +3,59 @@ const Listing = require("../models/listing.js");
 const allListing = require("./data.js");
 
 const mbxGeoCoding = require("@mapbox/mapbox-sdk/services/geocoding");
-process.env.mapToken ="pk.eyJ1IjoidmluaXRtb2RpIiwiYSI6ImNseHlnNjYwbTAwZTEya3IyNW96M2d0ZHgifQ.vm0AB_lRtReDu3PskCcMFg";
+const mapToken = process.env.MAP_TOKEN; // Ensure this is set properly
 const geocodingClient = mbxGeoCoding({ accessToken: mapToken });
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// Ensure that the environment variable is set correctly
+const dbUrl = process.env.ATLASDB_URL;
+if (!dbUrl) {
+  console.error("Error: ATLASDB_URL is not set");
+  process.exit(1);
+}
 
 main()
   .then(() => {
-    console.log("connection successful with db");
+    console.log("Connection successful with DB");
   })
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    console.error("Error connecting to DB:", err);
+    process.exit(1);
+  });
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbUrl);
 }
 
 const initDB = async () => {
-  await Listing.deleteMany({});
-  console.log(1);
-  for (let listing of allListing) {
-    let response = await geocodingClient.forwardGeocode({
-      query: listing.location,
-      limit: 1,
-    }).send();
-    listing.geometry = response.body.features[0].geometry;
+  try {
+    await Listing.deleteMany({});
+    console.log("Listings deleted");
+
+    for (let listing of allListing) {
+      try {
+        let response = await geocodingClient
+          .forwardGeocode({
+            query: listing.location,
+            limit: 1,
+          })
+          .send();
+
+        listing.geometry = response.body.features[0].geometry;
+      } catch (geoError) {
+        console.error("Geocoding error for listing:", listing, geoError);
+      }
+    }
+
+    const updatedData = allListing.map((obj) => ({
+      ...obj,
+      owner: "66740214d208973a010e3232",
+    }));
+
+    await Listing.insertMany(updatedData);
+    console.log("Data was initialized");
+  } catch (dbError) {
+    console.error("Error initializing data:", dbError);
   }
-
-  const updatedData = allListing.map((obj) => ({
-    ...obj,
-    owner: "66740214d208973a010e3232",
-  }));
-
-  await Listing.insertMany(updatedData);
-  console.log("Data was initialized");
 };
 
 initDB();
