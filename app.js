@@ -1,6 +1,6 @@
 /* Main file */
 
-//REQUIRE LIBRARIES OR FILES
+
 if(process.env.NODE_ENV != "production"){
   require("dotenv").config();
 }
@@ -62,7 +62,7 @@ const store = MongoStore.create({
 store.on("error",()=>{
   console.log("Error in MONGO SESSION STORE", err);
   
-})
+});
 
 
 //session option 
