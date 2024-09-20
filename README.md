@@ -9,3 +9,15 @@ Welcome to the Favorite Places Listing Project! This project allows users to lis
 - **Authorization**: Different access levels for users
 - User-friendly interface to add, edit, and delete favorite places.
 - Integration with maps for location visualization.
+
+## Technologies Used
+- **Frontend**:
+  - EJS (Embedded JavaScript templates)
+  - HTML
+  - CSS
+  - Bootstrap (for styling)
+
+- **Backend**:
+  - Node.js
+  - Express.js
+  - MongoDB (for database management)
