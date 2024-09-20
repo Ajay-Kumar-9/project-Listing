@@ -19,8 +19,15 @@ router
     
     upload.single("listing[image]"),
     validateListing,
+    
     wrapAsync(listingController.createListing),
   );
+
+
+
+
+
+
  
 
 //NEW ROUTE (render a form to create new lisitng)

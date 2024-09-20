@@ -29,7 +29,6 @@ const upload = multer({ dest: 'uploads/' });
 
 // MONGO DB SETUP
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
 const dbUrl = process.env.ATLASDB_URL;
 
@@ -100,11 +99,15 @@ app.use((req, res, next) => {
   next();
 });
 
-//HOME ROUTE
-// app.get("/", (req, res) => {
-//   res.send("this is the home route");
+// // HOME ROUTE
+// router.get("/", (req, res) => {
+//   res.render("listings/index.ejs");
 // });
 
+
+app.get("/", (req,res) => {
+  res.redirect("/listings")
+});
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
@@ -120,6 +123,7 @@ app.use((err, req, res, next) => {
   let { status = 500, message = "Something went wrong" } = err;
   res.status(status).render("error.ejs", { err });
 });
+
 
 //BASIC SERVER SETUP
 app.listen(8080, () => {

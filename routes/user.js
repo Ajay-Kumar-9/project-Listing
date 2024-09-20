@@ -22,23 +22,7 @@ router.route("/login")
   userController.login
 );
 
-// router.get("/signup",userController.renderSignupForm );
 
-// router.post(
-//     "/signup",
-//     wrapAsync(userController.Signup));
-  
-// router.get("/login",userController.renderLoginform );
-
-// router.post(
-//   "/login",
-//   saveRedirectUrl,
-//   passport.authenticate("local", {
-//     failureRedirect: "/login",
-//     failureFlash: true,
-//   }),
-//   userController.login
-// );
 
 router.get("/logout",userController.logout);
 
